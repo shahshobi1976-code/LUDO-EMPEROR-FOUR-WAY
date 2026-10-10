@@ -15,22 +15,15 @@
 
 :root {
     --game-w: 100vw;
-    /* The RUN host already pads below its native header, so we deliberately
-       do NOT use env(safe-area-inset-top) — it double-pads on Android.
-       Consume via the pt-safe-top utility below. */
     --safe-top: 0px;
 }
 
 @media (orientation: landscape) {
-    /* ADAPT: 9/16 assumes a portrait game (game.config orientation:
-       "portrait"). For a landscape game, drop this override and set
-       "orientation": "landscape" in game.config.prod.json instead. */
     :root {
         --game-w: min(100vw, calc(100dvh * 9 / 16));
     }
 }
 
-/* Fullscreen landscape: use the whole wide screen */
 html.land {
     --game-w: 100vw;
 }
@@ -44,7 +37,7 @@ body {
     position: fixed;
     inset: 0;
     overflow: hidden;
-    background: #000; /* letterbox bars */
+    background: #000;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
@@ -57,7 +50,6 @@ body {
     inset: 0;
 }
 
-/* The device frame every screen renders inside (see ui/App.jsx). */
 #app-frame {
     position: fixed;
     top: 0;
@@ -66,13 +58,34 @@ body {
     transform: translateX(-50%);
     width: var(--game-w);
     overflow: hidden;
+    background: #050a18;
+    color: #fff;
 }
 
-/* Safe-area utilities. Bottom uses the real env inset (home indicator);
-   top uses --safe-top per the note above. */
+#app-frame.land { width: min(100vw, max(calc(100vh * 1.45), 820px)); }
+#app-frame.fs.land { width: 100vw; }
+#app-frame.fs:not(.land) { width: 100vw; }
+
 @utility pt-safe-top {
     padding-top: calc(0.5rem + var(--safe-top));
 }
 @utility pb-safe-bottom {
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
 }
+
+.menu {
+    background-color: #050a18;
+    background-image:
+        linear-gradient(rgba(24, 224, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 224, 255, 0.07) 1px, transparent 1px),
+        radial-gradient(circle at 20% 15%, rgba(24, 224, 255, 0.18), transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(255, 60, 200, 0.14), transparent 45%);
+    background-size: 28px 28px, 28px 28px, auto, auto;
+}
+
+.glow-title {
+    text-shadow: 0 0 12px rgba(24, 224, 255, 0.8), 0 0 30px rgba(24, 224, 255, 0.45), 0 3px 0 #0a3a5a;
+}
+
+@keyframes pop { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.pop { animation: pop 0.2s ease-out; }
